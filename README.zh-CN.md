@@ -5,11 +5,11 @@
 <p align="center"><strong>用 Android 手机，查看电脑的 HDMI 画面。</strong></p>
 [English](README.md) · **简体中文**
 
-**[下载 Android APK](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.3/pocket-monitor-0.1.3-release.apk)** · [界面截图](#界面预览) · [开始使用](#三步开始使用) · [文档导航](docs/README.md) · [反馈问题](https://github.com/ttermish/pocket-monitor/issues/new/choose)
+**[下载 Android APK](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.4/pocket-monitor-0.1.4-release.apk)** · [界面截图](#界面预览) · [开始使用](#三步开始使用) · [文档导航](docs/README.md) · [反馈问题](https://github.com/ttermish/pocket-monitor/issues/new/choose)
 
 随身屏是一款便携视频监视器 App。把电脑的 HDMI 输出接入 USB 视频采集卡，再把采集卡连接到手机，就能在手机上预览画面，电脑无需安装发送端程序。
 
-适合想把手机当作临时小屏幕、查看另一台电脑视频输出的场景。当前为 **0.1.3 开发测试版，支持 Android 8.0 及以上**；具体手机与采集卡组合仍需实测。
+适合想把手机当作临时小屏幕、查看另一台电脑视频输出的场景。当前为 **0.1.4 开发测试版，支持 Android 8.0 及以上**；具体手机与采集卡组合仍需实测。
 
 ## 界面预览
 
@@ -17,7 +17,7 @@
 | :---: | :---: | :---: |
 | [![预览页：连接、旋转、视频设置与全屏](docs/images/preview-zh.png)](docs/images/preview-zh.png) | [![设备页：查找采集卡和选择视频格式](docs/images/devices-zh.png)](docs/images/devices-zh.png) | [![深色设置页：外观、配色、语言和预览偏好](docs/images/settings-zh.png)](docs/images/settings-zh.png) |
 
-[逐张查看截图](docs/images/README.md)。仓库与图片已公开，无需登录。离线阅读请[下载完整源码包](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.3/pocket-monitor-0.1.3-source.zip)并解压，保留 README 旁的 `docs/images/` 目录。
+[逐张查看截图](docs/images/README.md)。仓库与图片已公开，无需登录。离线阅读请[下载离线文档包](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.4/pocket-monitor-0.1.4-docs.zip)并解压，保留 README 旁的 `docs/images/` 目录。
 
 **预览 · 设备 · 设置。** 截图来自应用实际界面的自动化渲染，展示浅色和深色外观下未连接采集卡的状态；目前尚未完成真实 HDMI 采集验收。
 
@@ -45,7 +45,7 @@
 
 ## 安装
 
-[下载签名 Android APK](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.3/pocket-monitor-0.1.3-release.apk) · [发行说明、源码与校验值](https://github.com/ttermish/pocket-monitor/releases/tag/v0.1.3)
+[下载签名 Android APK](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.4/pocket-monitor-0.1.4-release.apk) · [发行说明、源码与校验值](https://github.com/ttermish/pocket-monitor/releases/tag/v0.1.4)
 
 APK 已公开下载，无需登录。开发者也可按[构建指南](docs/DEVELOPMENT.md)生成安装包。
 
@@ -53,7 +53,8 @@ APK 已公开下载，无需登录。开发者也可按[构建指南](docs/DEVEL
 | --- | --- |
 | `*-release.apk` | 在 Android 手机上安装。 |
 | `*-release.aab` | 商店分发使用，不能直接安装。 |
-| [`*-source.zip`](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.3/pocket-monitor-0.1.3-source.zip) | 源码与完整文档，包含界面截图。 |
+| [`*-source.zip`](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.4/pocket-monitor-0.1.4-source.zip) | 源码与完整文档，包含界面截图。 |
+| [`*-docs.zip`](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.4/pocket-monitor-0.1.4-docs.zip) | 双语指南和截图，完整解压后离线阅读。 |
 | `SHA256SUMS` | 核对下载文件是否完整，见[下载说明](docs/DOWNLOADS.md)。 |
 
 新标签页面如果只显示 **Source code**，说明该版本的 APK 尚未发布；等待 **Android Release** 工作流完成，再从 **Assets** 下载 `.apk`，或直接点击上面的 APK 链接。Source code 是源码，不是安装包。

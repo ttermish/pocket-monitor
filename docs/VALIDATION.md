@@ -32,6 +32,14 @@
 - 101 个中英文字符串键与编号占位符一致；本地文档目标和 GitHub Actions 工作流静态检查通过。
 - Release APK/AAB 构建与 Lint 通过；APK 签名指纹与既有 Release 一致，签名和 ZIP 对齐检查通过。AAB 禁用语言拆包，保证应用内离线切换语言；包内包含两种语言资源和 9 份许可/声明文件。
 
+## 0.1.4 发布前验证（2026-09-25）
+
+- Debug APK、签名 Release APK / AAB 构建成功，Debug / Release Lint 通过。
+- Android 的 18 项测试本次执行通过；共享测试任务复用最新输出，11 项测试报告无失败或跳过。
+- 10 项 Python 文档与发行打包测试本次执行通过；文档链接、101 个翻译键、工作流 actionlint 和差异空白检查通过。
+- APK 证书指纹与既有 Release 一致；APK / AAB 签名和 APK ZIP 对齐检查通过。版本为 0.1.4，versionCode 5。
+- GitHub 标签发布结果以对应 Actions 记录及 Release 附件为准；硬件未完成事项如下。
+
 ## 未完成的硬件验证
 
 当前开发环境没有 ADB 真机和 USB 采集卡。没有验证 Mac HDMI 实际输入、特定绿联型号、真实帧率/延迟、手机 USB 供电、拔插或 native USB 视频稳定性。Robolectric 测试不会执行真实 libuvc 传输。
