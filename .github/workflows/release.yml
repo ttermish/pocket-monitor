@@ -48,7 +48,7 @@ jobs:
         with:
           cache-disabled: true
       - name: Install Android SDK packages
-        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+        run: '$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-35" "build-tools;35.0.0"'
       - name: Run tests
         run: ./gradlew --no-daemon :shared:jvmTest :androidApp:testDebugUnitTest
       - name: Restore signing key
