@@ -10,6 +10,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
+import org.junit.Before
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -17,9 +18,10 @@ import org.robolectric.annotation.GraphicsMode
 import java.io.File
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [35], qualifiers = "w412dp-h892dp-420dpi")
+@Config(sdk = [35], qualifiers = "zh-rCN-w412dp-h892dp-420dpi")
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 class MonitorScreenTest {
+    @Before fun initializeResources() = initializeComposeResources()
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
 
     @Test fun idleScreenExplainsWiringAndOffersPermission() {

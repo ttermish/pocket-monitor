@@ -26,6 +26,7 @@
 ./gradlew :shared:jvmTest
 ./gradlew :androidApp:testDebugUnitTest :androidApp:lintDebug
 ./gradlew :androidApp:assembleDebug
+python3 scripts/check_project.py
 git diff --check
 ```
 
@@ -38,3 +39,5 @@ git diff --check
 不提交 APK、构建缓存、`local.properties`、凭据、签名文件和无关格式化变更。新增依赖时说明用途，核对来源与许可证，并更新[第三方声明](THIRD_PARTY_NOTICES.md)。保持上游版权和许可声明，不将他人代码声明为本项目原创。
 
 遵守[社区行为准则](CODE_OF_CONDUCT.md)。讨论保持友善，围绕事实和代码提供反馈，允许不同经验的贡献者提问。维护者按项目范围、可维护性和验证情况评审；不承诺固定处理时限。
+
+界面文本与截图更新请参考[翻译指南](docs/TRANSLATING.md)。

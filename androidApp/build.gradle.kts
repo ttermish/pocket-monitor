@@ -8,6 +8,10 @@ val releaseStoreFile = providers.environmentVariable("ANDROID_KEYSTORE_PATH")
 val releaseStorePassword = providers.environmentVariable("ANDROID_KEYSTORE_PASSWORD")
 val releaseKeyAlias = providers.environmentVariable("ANDROID_KEY_ALIAS")
 val releaseKeyPassword = providers.environmentVariable("ANDROID_KEY_PASSWORD")
+val syncProjectNotices = tasks.register<Sync>("syncProjectNotices") {
+    from(rootProject.projectDir) { include("LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md") }
+    into(layout.buildDirectory.dir("generated/project-notices/licenses"))
+}
 val validateReleaseSigning = tasks.register("validateReleaseSigning") {
     doLast {
         val required = mapOf(
@@ -29,8 +33,8 @@ android {
         applicationId = "dev.icelum.pocketmonitor"
         minSdk = 26
         targetSdk = 35
-        versionCode = 3
-        versionName = "0.1.2"
+        versionCode = 4
+        versionName = "0.1.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -47,6 +51,9 @@ android {
         }
     }
     buildFeatures { compose = true }
+    // Both languages must remain available for offline, in-app switching in AAB installs.
+    bundle { language { enableSplit = false } }
+    sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/project-notices"))
     testOptions.unitTests.isIncludeAndroidResources = true
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -55,6 +62,7 @@ android {
     kotlinOptions { jvmTarget = "17" }
     packaging.resources.excludes += setOf("META-INF/AL2.0", "META-INF/LGPL2.1")
 }
+tasks.named("preBuild") { dependsOn(syncProjectNotices) }
 tasks.matching { it.name == "preReleaseBuild" }.configureEach {
     dependsOn(validateReleaseSigning)
 }

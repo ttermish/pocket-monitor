@@ -17,7 +17,10 @@
 | --- | --- |
 | `shared/.../CaptureModel.kt` | 状态、设备与模式模型、排序、降级、连接代次、显示比例 |
 | `shared/.../MonitorScreen.kt` | 共享 Compose UI，通过回调表达用户操作 |
+| `shared/.../DevicePage.kt`、`SettingsPage.kt`、`MonitorTheme.kt` | 设备选择、持久化偏好界面与多主题 |
+| `shared/src/commonMain/composeResources/` | 中英文 UI 资源；错误状态通过 `CaptureMessage` 在界面翻译 |
 | `androidApp/.../MainActivity.kt` | 权限入口、生命周期、TextureView 和显示变换 |
+| `androidApp/.../AppLocale.kt`、`AppPreferencesStore.kt` | 应用内语言环境与本地偏好存储 |
 | `androidApp/.../UvcCaptureController.kt` | USB 发现与授权、原生采集、连接恢复、状态发布 |
 | `androidApp/.../PreviewFrames.kt` | 单次连接的首帧、帧计数和持续出帧判断 |
 | `androidApp/.../SuccessfulModeStore.kt` | 按 VID/PID 保存有效模式 |
@@ -36,6 +39,7 @@
 6. 启动 8 秒无帧或启动异常时最多降级重连两次；降级不能增加像素数量或帧率，也不能从 MJPEG 自动切到 YUY2。已经出帧后的中断不能触发无限重连。
 7. 保存模式须满足持续出帧判断，不能只依据成功打开设备或偶发首帧。VID/PID 表示型号，同型号设备共用设置。
 8. 保持 TextureView 直接渲染；不要为 Compose 每帧复制 Bitmap。界面 fps 表示采集流统计，不能声称测得 HDMI 锁定状态或端到端延迟。
+9. 预览、设备、设置是页面标签，当前仅允许单卡采集。切换页面、主题或语言不能销毁已挂载的预览 View；隐藏预览控件必须移出无障碍遍历。
 
 ## 本地构建与验证
 
@@ -45,6 +49,7 @@
 ./gradlew :shared:jvmTest
 ./gradlew :androidApp:testDebugUnitTest :androidApp:lintDebug
 ./gradlew :androidApp:assembleDebug
+python3 scripts/check_project.py
 ```
 
 - 只改文档：检查事实、相对链接和 `git diff --check`，无需重跑应用测试。
@@ -63,4 +68,5 @@ APK 位于 `androidApp/build/outputs/apk/debug/androidApp-debug.apk`。报告位
 - `artifacts/`、构建输出、`local.properties`、`.env`、密钥和签名文件不提交；不把本机基础设施、凭据或私有配置写入项目文档。
 - 本地提交、推送和创建 Release 是不同操作，按用户已授权范围执行。推送代码不代表发布 APK；Release 中列出的附件必须实际存在且与版本对应。
 - 保留 `THIRD_PARTY_NOTICES.md` 与 `androidApp/src/main/assets/licenses/`。变更第三方依赖或分发方式时同步来源、版本和对应许可材料，不自行更改项目授权方式。
+- 中英文字符串保持相同键与编号占位符；新增用户可见文字使用资源。详见 `docs/TRANSLATING.md`。README 截图由测试渲染真实 UI，更新时检查两种语言的布局，不生成假采集画面。
 - `main` 和 PR 只运行 CI，不读取发布密钥；签名发布只由 `v*` 标签触发，使用仅允许版本标签的 `release` Environment。修改工作流时保留签名缺失即失败、证书指纹校验、版本与标签一致及私钥清理逻辑，具体步骤见 `docs/RELEASING.md`。

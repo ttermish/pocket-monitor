@@ -3,6 +3,22 @@ package dev.icelum.pocketmonitor
 import kotlin.test.*
 
 class CaptureModelTest {
+    @Test fun multipleCardsRequireExplicitSelectionAndStaleSelectionDoesNotFallBack() {
+        val first = CaptureDevice("usb-a", "Same card", 1, 2)
+        val second = first.copy(id = "usb-b")
+        assertNull(connectionDevice(emptyList(), null))
+        assertEquals(first, connectionDevice(listOf(first), null))
+        assertNull(connectionDevice(listOf(first, second), null))
+        assertEquals(second, connectionDevice(listOf(first, second), second.id))
+        assertNull(connectionDevice(listOf(first), second.id))
+    }
+
+    @Test fun explicitThemeOverridesSystemAppearance() {
+        assertTrue(ThemeMode.System.isDark(true))
+        assertFalse(ThemeMode.System.isDark(false))
+        assertFalse(ThemeMode.Light.isDark(true))
+        assertTrue(ThemeMode.Dark.isDark(false))
+    }
     @Test fun savedModeWinsOnlyWhenStillAdvertised() {
         val saved = VideoMode(1920, 1080, 30, VideoEncoding.Mjpeg)
         val standard = VideoMode(1280, 720, 30, VideoEncoding.Mjpeg)

@@ -5,6 +5,13 @@ import kotlin.math.abs
 enum class CapturePhase { Idle, Permission, Connecting, WaitingForFrames, Streaming, Stalled, Error, Paused }
 enum class VideoEncoding(val title: String, val uvcType: Int) { Mjpeg("MJPEG", 7), Yuy2("YUY2", 5) }
 
+/** UI resolves these messages in the current locale; native callbacks never store translated text. */
+enum class CaptureMessage {
+    Unplugged, ResumeOnReturn, CameraPermissionRequired, DeviceMissing, Recovering,
+    Disconnected, UsbClosed, UsbPermissionDenied, UsbOpenFailed, UsbPermissionFailed,
+    Stopped, VideoStartFailed, NativeUnavailable, NoFrames,
+}
+
 data class CaptureDevice(val id: String, val name: String, val vendorId: Int, val productId: Int)
 data class VideoMode(val width: Int, val height: Int, val fps: Int, val encoding: VideoEncoding) {
     val label: String get() = "${width} × $height · $fps fps · ${encoding.title}"
@@ -18,11 +25,16 @@ data class CaptureState(
     val framesPerSecond: Int = 0,
     val cameraPermission: Boolean = false,
     val usbHostSupported: Boolean = true,
-    val message: String? = null,
+    val message: CaptureMessage? = null,
+    val recoveryAttempt: Int = 0,
 ) {
     val selectedDevice: CaptureDevice? get() = devices.find { it.id == selectedDeviceId }
     val busy: Boolean get() = phase == CapturePhase.Permission || phase == CapturePhase.Connecting
 }
+
+/** An explicit selection must still exist; never choose arbitrarily between connected cards. */
+fun connectionDevice(devices: List<CaptureDevice>, requestedId: String?): CaptureDevice? =
+    if (requestedId != null) devices.find { it.id == requestedId } else devices.singleOrNull()
 
 /** Prefer 720p/30 MJPEG to keep USB 2.0 bandwidth and phone decoding practical. */
 fun preferredModes(modes: List<VideoMode>): List<VideoMode> = modes

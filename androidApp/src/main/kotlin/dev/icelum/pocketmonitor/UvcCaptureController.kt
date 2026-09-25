@@ -45,7 +45,7 @@ class UvcCaptureController(private val context: Context) {
             refreshDevices()
             val selected = state.value.selectedDeviceId
             if (selected != null && state.value.devices.none { it.id == selected }) {
-                disconnect(CapturePhase.Idle, "采集卡已拔出，重新插入后将尝试连接。")
+                disconnect(CapturePhase.Idle, CaptureMessage.Unplugged)
             }
             reconnectRememberedDevice()
         }
@@ -70,7 +70,7 @@ class UvcCaptureController(private val context: Context) {
         foreground = false
         context.unregisterReceiver(receiver)
         main.removeCallbacks(stats)
-        disconnect(CapturePhase.Paused, "返回应用后恢复预览。")
+        disconnect(CapturePhase.Paused, CaptureMessage.ResumeOnReturn)
     }
 
     fun destroy() {
@@ -88,12 +88,12 @@ class UvcCaptureController(private val context: Context) {
     fun permissionDenied() {
         updatePermission()
         mutableState.value = state.value.copy(phase = CapturePhase.Error,
-            message = "需要相机权限才能读取 USB 视频。请再次授权，或在系统设置中开启。")
+            message = CaptureMessage.CameraPermissionRequired)
     }
 
     fun refreshDevices() {
         val devices = usb.deviceList.values.filter(::isVideoDevice).map { device ->
-            CaptureDevice(device.deviceName, device.productName?.takeIf { it.isNotBlank() } ?: "USB 视频采集卡",
+            CaptureDevice(device.deviceName, device.productName?.takeIf { it.isNotBlank() } ?: "",
                 device.vendorId, device.productId)
         }.sortedBy { it.id }
         mutableState.value = state.value.copy(devices = devices)
@@ -117,7 +117,7 @@ class UvcCaptureController(private val context: Context) {
         if (!state.value.cameraPermission) { permissionDenied(); return }
         val device = usb.deviceList[id]?.takeIf(::isVideoDevice) ?: run {
             refreshDevices()
-            mutableState.value = state.value.copy(phase = CapturePhase.Error, message = "没有找到这张采集卡，请重新插入。")
+            mutableState.value = state.value.copy(phase = CapturePhase.Error, message = CaptureMessage.DeviceMissing)
             return
         }
         disconnect(CapturePhase.Idle)
@@ -130,13 +130,14 @@ class UvcCaptureController(private val context: Context) {
         val token = session.begin(id)
         epoch.set(token)
         mutableState.value = state.value.copy(phase = CapturePhase.Permission, selectedDeviceId = id,
-            activeMode = null, modes = emptyList(), message = if (attempts.failures.isEmpty()) null else "视频未能启动，正在尝试较低规格（${attempts.failures.size}/2）…")
+            activeMode = null, modes = emptyList(), message = if (attempts.failures.isEmpty()) null else CaptureMessage.Recovering,
+            recoveryAttempt = attempts.failures.size)
         val currentMonitor = USBMonitor(context, object : USBMonitor.OnDeviceConnectListener {
             private fun current() = foreground && session.accepts(token, id)
             override fun onAttach(device: UsbDevice) { if (current()) refreshDevices() }
             override fun onDetach(device: UsbDevice) {
                 if (current() && device.deviceName == id) {
-                    disconnect(CapturePhase.Idle, "采集卡已断开。")
+                    disconnect(CapturePhase.Idle, CaptureMessage.Disconnected)
                     refreshDevices()
                 }
             }
@@ -147,18 +148,18 @@ class UvcCaptureController(private val context: Context) {
             }
             override fun onDeviceClose(device: UsbDevice, block: USBMonitor.UsbControlBlock) {
                 if (current() && device.deviceName == id) {
-                    disconnect(CapturePhase.Error, "USB 连接已关闭，请重新连接。")
+                    disconnect(CapturePhase.Error, CaptureMessage.UsbClosed)
                     refreshDevices()
                 }
             }
             override fun onCancel(device: UsbDevice) {
                 if (current()) {
                     rememberedDevice = null
-                    disconnect(CapturePhase.Error, "USB 访问未获授权。点击连接后，在系统弹窗中允许访问。")
+                    disconnect(CapturePhase.Error, CaptureMessage.UsbPermissionDenied)
                 }
             }
             override fun onError(device: UsbDevice, e: USBMonitor.USBException) {
-                if (current()) fail(token, id, "无法打开 USB 设备，请关闭其他采集应用后重试。", e)
+                if (current()) fail(token, id, CaptureMessage.UsbOpenFailed, e)
             }
         }, main)
         monitor = currentMonitor
@@ -167,7 +168,7 @@ class UvcCaptureController(private val context: Context) {
             worker.post {
                 if (epoch.get() == token) currentMonitor.requestPermission(device)
             }
-        } catch (e: Exception) { fail(token, id, "USB 授权失败，请重新插入采集卡。", e) }
+        } catch (e: Exception) { fail(token, id, CaptureMessage.UsbPermissionFailed, e) }
     }
 
     fun selectMode(mode: VideoMode) {
@@ -185,7 +186,7 @@ class UvcCaptureController(private val context: Context) {
 
     fun userDisconnect() {
         rememberedDevice = null
-        disconnect(CapturePhase.Idle, "已停止预览。")
+        disconnect(CapturePhase.Idle, CaptureMessage.Stopped)
     }
 
     private fun openCamera(token: Long, id: String, block: USBMonitor.UsbControlBlock, output: Surface?,
@@ -250,10 +251,10 @@ class UvcCaptureController(private val context: Context) {
                     if (!session.accepts(token, id)) return@post
                     val failedMode = chosen
                     if (failedMode == null || !tryLowerMode(id, failedMode, modes, attempts))
-                        fail(token, id, "无法开启视频，请检查采集卡或尝试重新连接。", e)
+                        fail(token, id, CaptureMessage.VideoStartFailed, e)
                 }
             } catch (e: LinkageError) {
-                main.post { fail(token, id, "此设备无法加载视频采集组件，请提供手机型号以便适配。", e) }
+                main.post { fail(token, id, CaptureMessage.NativeUnavailable, e) }
             }
         }
     }
@@ -283,7 +284,7 @@ class UvcCaptureController(private val context: Context) {
         }
     }
 
-    private fun disconnect(phase: CapturePhase, message: String? = null) {
+    private fun disconnect(phase: CapturePhase, message: CaptureMessage? = null) {
         session.invalidate()
         epoch.set(session.generation)
         val oldMonitor = monitor
@@ -298,12 +299,12 @@ class UvcCaptureController(private val context: Context) {
         }
         frames = PreviewFrames()
         mutableState.value = state.value.copy(phase = phase, activeMode = null, modes = emptyList(),
-            framesPerSecond = 0, message = message)
+            framesPerSecond = 0, message = message, recoveryAttempt = 0)
     }
 
-    private fun fail(token: Long, id: String, message: String, error: Throwable) {
+    private fun fail(token: Long, id: String, message: CaptureMessage, error: Throwable) {
         if (!session.accepts(token, id)) return
-        Log.e(TAG, message, error)
+        Log.e(TAG, message.name, error)
         disconnect(CapturePhase.Error, message)
     }
 
@@ -343,7 +344,7 @@ class UvcCaptureController(private val context: Context) {
                 }
                 mutableState.value = state.value.copy(phase = updatedPhase, framesPerSecond = fps.coerceAtLeast(0),
                     message = when {
-                        updatedPhase == CapturePhase.Stalled -> "未收到视频帧，自动尝试已停止。请检查 HDMI 输入、USB 供电或手动切换格式。"
+                        updatedPhase == CapturePhase.Stalled -> CaptureMessage.NoFrames
                         updatedPhase == CapturePhase.WaitingForFrames -> state.value.message
                         else -> null
                     })

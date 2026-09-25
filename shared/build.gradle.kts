@@ -14,10 +14,14 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
+            implementation(compose.components.resources)
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
         }
         commonTest.dependencies { implementation(kotlin("test")) }
     }
+}
+compose.resources {
+    packageOfResClass = "dev.icelum.pocketmonitor.resources"
 }
 android {
     namespace = "dev.icelum.pocketmonitor.shared"

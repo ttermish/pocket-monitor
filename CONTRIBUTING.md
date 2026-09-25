@@ -17,7 +17,7 @@ Remove personal information, USB serial numbers and private screen content from 
 ## Development workflow
 
 1. Fork the repository and create a focused branch from `main`, such as `fix/usb-reconnect`. A private repository requires access first.
-2. Follow the [build guide (中文)](docs/DEVELOPMENT.md) to configure JDK 17 and the Android SDK. Use the bundled Gradle Wrapper.
+2. Follow the [build guide](docs/DEVELOPMENT.en.md) to configure JDK 17 and the Android SDK. Use the bundled Gradle Wrapper.
 3. Keep each PR focused on one problem. Separate shared models from Android capture code, preserving session invalidation, threading and resource cleanup.
 4. Add regression coverage for behavior changes and run the relevant checks.
 5. Update affected documentation and open a PR describing the resulting behavior, verification and untested cases.
@@ -26,6 +26,7 @@ Remove personal information, USB serial numbers and private screen content from 
 ./gradlew :shared:jvmTest
 ./gradlew :androidApp:testDebugUnitTest :androidApp:lintDebug
 ./gradlew :androidApp:assembleDebug
+python3 scripts/check_project.py
 git diff --check
 ```
 
@@ -38,3 +39,5 @@ Use concise commit subjects such as `fix:`, `feat:`, `docs:`, `test:` or `build:
 Do not commit APKs, build caches, local SDK settings, credentials, signing files or unrelated formatting. Explain new dependencies, check their origin and license, and update [third-party notices](THIRD_PARTY_NOTICES.md). Preserve upstream attribution rather than claiming third-party work as original project code.
 
 Follow the [code of conduct](CODE_OF_CONDUCT.md). Maintainers review changes for scope, maintainability and verification; there is no guaranteed review turnaround.
+
+For UI text and screenshot updates, follow the [translation guide](docs/TRANSLATING.md).

@@ -21,6 +21,8 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
+      - name: Check documentation and translations
+        run: python3 scripts/check_project.py
       - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
         with:
           distribution: temurin
@@ -39,6 +41,7 @@ jobs:
             shared/build/reports/tests/
             androidApp/build/reports/tests/
             androidApp/build/reports/lint-results-debug.*
+            androidApp/build/reports/screenshots/
           if-no-files-found: warn
           retention-days: 14
       - name: Upload Debug APK

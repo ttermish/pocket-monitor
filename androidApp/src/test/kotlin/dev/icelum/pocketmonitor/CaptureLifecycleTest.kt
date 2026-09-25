@@ -7,6 +7,7 @@ import android.os.Looper
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.*
 import org.junit.Test
+import org.junit.Before
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
@@ -16,6 +17,7 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35])
 class CaptureLifecycleTest {
+    @Before fun initializeResources() = initializeComposeResources()
     @Test fun foregroundBackgroundCycleWithoutUsbDoesNotOpenCamera() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val capture = UvcCaptureController(context)
