@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/images/app-icon.svg" width="96" alt="随身屏圆角启动图标"></p>
+![随身屏 · Pocket Monitor](docs/images/app-icon.png)
 
 <h1 align="center">随身屏 · Pocket Monitor</h1>
 
@@ -11,11 +11,11 @@
 
 ## 界面预览
 
-<p align="center">
-  <img src="docs/images/preview-zh.png" width="250" alt="中文预览页：连接入口、旋转、视频设置与全屏操作">
-  <img src="docs/images/devices-zh.png" width="250" alt="中文设备页：查找采集卡并选择设备支持的视频格式">
-  <img src="docs/images/settings-zh.png" width="250" alt="深色设置页：明暗模式、主题色、语言与预览偏好">
-</p>
+| 预览 | 设备 | 设置 |
+| :---: | :---: | :---: |
+| [![预览页：连接、旋转、视频设置与全屏](docs/images/preview-zh.png)](docs/images/preview-zh.png) | [![设备页：查找采集卡和选择视频格式](docs/images/devices-zh.png)](docs/images/devices-zh.png) | [![深色设置页：外观、配色、语言和预览偏好](docs/images/settings-zh.png)](docs/images/settings-zh.png) |
+
+[逐张查看截图](docs/images/README.md)。图片未显示时，请在 GitHub 中使用有仓库权限的账号登录查看。离线阅读请解压完整源码包，保留 README 旁的 `docs/images/` 目录。
 
 **预览 · 设备 · 设置。** 截图来自应用实际界面的自动化渲染，展示浅色和深色外观下未连接采集卡的状态；目前尚未完成真实 HDMI 采集验收。
 

@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/images/app-icon.svg" width="96" alt="Pocket Monitor rounded launcher icon"></p>
+![Pocket Monitor](docs/images/app-icon.png)
 
 <h1 align="center">Pocket Monitor · 随身屏</h1>
 
@@ -11,11 +11,11 @@ Use your phone as a temporary small display to check another computer’s video 
 
 ## Preview
 
-<p align="center">
-  <img src="docs/images/preview-en.png" width="250" alt="Preview tab in English with connection and picture controls">
-  <img src="docs/images/devices-en.png" width="250" alt="Devices tab showing how to find a capture card and select a format">
-  <img src="docs/images/settings-en.png" width="250" alt="Settings tab in dark mode with theme, color, language and preview preferences">
-</p>
+| Preview | Devices | Settings |
+| :---: | :---: | :---: |
+| [![Preview tab with connection and picture controls](docs/images/preview-en.png)](docs/images/preview-en.png) | [![Devices tab with capture-card and format selection](docs/images/devices-en.png)](docs/images/devices-en.png) | [![Dark settings tab with theme, color and language preferences](docs/images/settings-en.png)](docs/images/settings-en.png) |
+
+[View screenshots individually](docs/images/README.md). If images do not load, open this README on GitHub while signed into an account with repository access. For offline viewing, extract the full source archive so `docs/images/` stays alongside the README.
 
 **Preview · Devices · Settings.** These screenshots are rendered from the actual app UI, with no capture card connected. They show light and dark appearances; real HDMI capture still needs hardware validation.
 
