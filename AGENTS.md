@@ -63,4 +63,4 @@ APK 位于 `androidApp/build/outputs/apk/debug/androidApp-debug.apk`。报告位
 - `artifacts/`、构建输出、`local.properties`、`.env`、密钥和签名文件不提交；不把本机基础设施、凭据或私有配置写入项目文档。
 - 本地提交、推送和创建 Release 是不同操作，按用户已授权范围执行。推送代码不代表发布 APK；Release 中列出的附件必须实际存在且与版本对应。
 - 保留 `THIRD_PARTY_NOTICES.md` 与 `androidApp/src/main/assets/licenses/`。变更第三方依赖或分发方式时同步来源、版本和对应许可材料，不自行更改项目授权方式。
-- GitHub CI 检查不读取发布密钥；签名发布使用 `release` Environment。修改工作流时保留签名缺失即失败、证书指纹校验、版本与标签一致及私钥清理逻辑，具体步骤见 `docs/RELEASING.md`。
+- `main` 和 PR 只运行 CI，不读取发布密钥；签名发布只由 `v*` 标签触发，使用仅允许版本标签的 `release` Environment。修改工作流时保留签名缺失即失败、证书指纹校验、版本与标签一致及私钥清理逻辑，具体步骤见 `docs/RELEASING.md`。

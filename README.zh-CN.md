@@ -5,7 +5,7 @@
 
 随身屏是一款便携视频监视器 App。把电脑的 HDMI 输出接入 USB 视频采集卡，再把采集卡连接到手机，就能在手机上预览画面，电脑无需安装发送端程序。
 
-适合想把手机当作临时小屏幕、查看另一台电脑视频输出的场景。当前为 **0.1.1 开发测试版，支持 Android 8.0 及以上**；具体手机与采集卡组合仍需实测。
+适合想把手机当作临时小屏幕、查看另一台电脑视频输出的场景。当前为 **0.1.2 开发测试版，支持 Android 8.0 及以上**；具体手机与采集卡组合仍需实测。
 
 ## 界面预览
 
@@ -38,7 +38,9 @@
 
 ## 安装
 
-当前尚未创建 GitHub Release。签名 APK/AAB 由成功的 [Android Release 工作流](https://github.com/ttermish/pocket-monitor/actions/workflows/release.yml)上传：打开一次已完成的运行，下载 `signed-release-<run id>`，解压后安装 `-release.apk`。仓库为私有时需要访问权限。开发者也可按[构建指南](docs/DEVELOPMENT.md)生成安装包。
+[下载签名 Android APK](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.2/pocket-monitor-0.1.2-release.apk) · [发行说明、源码与校验值](https://github.com/ttermish/pocket-monitor/releases/tag/v0.1.2)
+
+仓库为私有时需要访问权限。开发者也可按[构建指南](docs/DEVELOPMENT.md)生成安装包。
 
 在手机打开 APK，按系统提示允许该来源安装应用。Release 包使用专用签名，与本地 Debug 包不同，不能直接覆盖已有 Debug 安装；卸载旧版本会清除已保存的格式设置。AAB 用于商店分发，不能直接安装。
 

@@ -6,17 +6,16 @@
 
 | 工作流 | 触发方式 | 结果 |
 | --- | --- | --- |
-| `Android CI` | 推送 `main`、向 `main` 提 PR、手动运行 | 共享测试、Android 单元测试、Debug Lint；分支构建上传 Debug APK，报告保留 14 天 |
-| `Android Release` | 在 `main` 手动运行 | 测试、Release Lint、签名 APK/AAB 和完整附件；Actions artifact 保留 30 天，不创建版本标签或 Release |
+| `Android CI` | 推送 `main`、向 `main` 提 PR | 共享测试、Android 单元测试、Debug Lint；分支构建上传 Debug APK，报告保留 14 天，不发布 Release |
 | `Android Release` | 推送 `v*` 标签 | 标签必须匹配 Android versionName，提交必须属于 `main` 历史；构建通过后创建 GitHub 预发行版并上传附件 |
 
-手动打包：打开仓库 **Actions → Android Release → Run workflow → main**。完成后下载 `signed-release-<run id>`，解压取出 `pocket-monitor-<版本>-release.apk` 安装；AAB 用于后续商店上传，不能直接安装。
+签名发布只接受标签触发，不提供从 `main` 手动运行的入口。完成后从 GitHub Release 下载 `pocket-monitor-<版本>-release.apk` 安装；AAB 用于后续商店上传，不能直接安装。整套附件也上传为 Actions artifact，保留 30 天。
 
 标签发行前，先更新版本号和 `docs/releases/v<版本>.md`，提交并推送 `main`，再创建新标签。不要移动已经发布或用于其他构建的旧标签。仓库仍为私有时，Actions 产物及 Release 也需要仓库访问权限。
 
 ## 签名 Environment
 
-`release` GitHub Environment 仅允许 `main` 分支和 `v*` 标签。CI / PR 检查不读取签名信息。Environment 中配置：
+`release` GitHub Environment 仅允许 `v*` 标签。CI / PR 检查不读取签名信息。Environment 中配置：
 
 | 名称 | 类型 | 内容 |
 | --- | --- | --- |

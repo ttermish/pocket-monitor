@@ -5,7 +5,7 @@
 
 Pocket Monitor is a portable video monitor app. Connect your computer’s HDMI output to a USB video capture card, then connect the card to your phone to preview the picture. No sender software is needed on the computer.
 
-Use your phone as a temporary small display to check another computer’s video output. The current **0.1.1 development build supports Android 8.0 and later**. Individual phone and capture-card combinations still need hardware testing.
+Use your phone as a temporary small display to check another computer’s video output. The current **0.1.2 development build supports Android 8.0 and later**. Individual phone and capture-card combinations still need hardware testing.
 
 ## Preview
 
@@ -38,7 +38,9 @@ This version previews video only. Audio, recording, screenshots, keyboard/mouse 
 
 ## Install
 
-No GitHub Release has been published yet. Signed APK/AAB bundles are uploaded by successful [Android Release workflow runs](https://github.com/ttermish/pocket-monitor/actions/workflows/release.yml): open a completed run, download `signed-release-<run id>`, unzip it and install the `-release.apk`. Repository access is required while this project is private. Developers can also use the [build guide](docs/DEVELOPMENT.md).
+[Download the signed Android APK](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.2/pocket-monitor-0.1.2-release.apk) · [Release notes, source and checksums](https://github.com/ttermish/pocket-monitor/releases/tag/v0.1.2)
+
+Repository access is required while this project is private. Developers can also use the [build guide](docs/DEVELOPMENT.md).
 
 Open the APK on your phone and allow installation from that source when prompted. Release packages use a dedicated signing key; local Debug packages use a different signature. A Release APK cannot update an existing Debug installation directly. Uninstalling the previous version clears saved capture formats. An AAB is intended for store distribution and cannot be installed directly.
 
