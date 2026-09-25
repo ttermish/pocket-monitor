@@ -45,6 +45,8 @@ This version previews video only. Audio, recording, screenshots, keyboard/mouse 
 
 Repository access is required while this project is private. Developers can also use the [build guide](docs/DEVELOPMENT.en.md).
 
+If a newly pushed tag only shows **Source code**, its release build has not published the APK yet. Wait for **Android Release** to finish, then download the `.apk` under **Assets** or use the APK link above.
+
 Open the APK on your phone and allow installation from that source when prompted. Release packages use a dedicated signing key; local Debug packages use a different signature. A Release APK cannot update an existing Debug installation directly. Uninstalling the previous version clears saved capture formats. An AAB is intended for store distribution and cannot be installed directly.
 
 ## Quick start

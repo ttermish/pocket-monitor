@@ -11,6 +11,8 @@
 
 签名发布只接受标签触发，不提供从 `main` 手动运行的入口。完成后从 GitHub Release 下载 `pocket-monitor-<版本>-release.apk` 安装；AAB 用于后续商店上传，不能直接安装。整套附件也上传为 Actions artifact，保留 30 天。
 
+版本发行说明顶部应放置带明确版本的 APK 下载链接；标签推送后、签名工作流完成前，GitHub 标签页可能只有自动生成的 Source code，不能把它视为已发布安装包。若工作流失败，修复后重跑对应失败任务并检查附件，不能用新的标签覆盖同版本。
+
 标签发行前，先更新版本号和 `docs/releases/v<版本>.md`，提交并推送 `main`，再创建新标签。不要移动已经发布或用于其他构建的旧标签。仓库仍为私有时，Actions 产物及 Release 也需要仓库访问权限。
 
 ## 签名 Environment
