@@ -118,6 +118,7 @@ APK 已公开下载，无需登录。开发者也可按[构建指南](docs/DEVEL
 
 项目许可证仍待所有者选择，尚未添加根目录 LICENSE；第三方组件许可单独列于下方。
 
+- [文档导航](docs/README.md)
 - [隐私说明](docs/PRIVACY.md) · [硬件兼容性](docs/COMPATIBILITY.md) · [功能计划](docs/ROADMAP.md)
 - [贡献指南](CONTRIBUTING.zh-CN.md) · [安全问题报告](SECURITY.zh-CN.md)
 - [开发与构建](docs/DEVELOPMENT.md) · [开发约定](AGENTS.md)

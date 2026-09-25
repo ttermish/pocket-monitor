@@ -118,6 +118,7 @@ The tabs separate preview controls, capture devices and app preferences. Switchi
 
 Project licensing is awaiting the owner’s choice; a root project LICENSE has not been added yet. Third-party licenses are listed separately below.
 
+- [Documentation index](docs/README.md)
 - [Privacy](docs/PRIVACY.md) · [Hardware compatibility](docs/COMPATIBILITY.md) · [Roadmap](docs/ROADMAP.md)
 - [Contributing](CONTRIBUTING.md) · [Security reports](SECURITY.md)
 - [Development and builds](docs/DEVELOPMENT.en.md) · [Development conventions (中文)](AGENTS.md)
