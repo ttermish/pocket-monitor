@@ -16,7 +16,7 @@
 
 ## 开发流程
 
-1. Fork 仓库并从 `main` 创建主题分支，例如 `fix/usb-reconnect`。仓库私有时需先取得访问权限。
+1. Fork 仓库并从 `main` 创建主题分支，例如 `fix/usb-reconnect`。
 2. 按[开发指南](docs/DEVELOPMENT.md)配置 JDK 17 和 Android SDK，使用仓库自带 Gradle Wrapper。
 3. 让一个 PR 聚焦一个问题。保持共享模型与 Android 平台采集层分离，保留连接代次、线程和资源释放约束。
 4. 对有行为变化的逻辑补充能复现问题的回归测试，并运行与改动对应的检查。

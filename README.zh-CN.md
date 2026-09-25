@@ -15,7 +15,7 @@
 | :---: | :---: | :---: |
 | [![预览页：连接、旋转、视频设置与全屏](docs/images/preview-zh.png)](docs/images/preview-zh.png) | [![设备页：查找采集卡和选择视频格式](docs/images/devices-zh.png)](docs/images/devices-zh.png) | [![深色设置页：外观、配色、语言和预览偏好](docs/images/settings-zh.png)](docs/images/settings-zh.png) |
 
-[逐张查看截图](docs/images/README.md)。图片未显示时，请在 GitHub 中使用有仓库权限的账号登录查看。离线阅读请解压完整源码包，保留 README 旁的 `docs/images/` 目录。
+[逐张查看截图](docs/images/README.md)。仓库与图片已公开，无需登录。离线阅读请解压完整源码包，保留 README 旁的 `docs/images/` 目录。
 
 **预览 · 设备 · 设置。** 截图来自应用实际界面的自动化渲染，展示浅色和深色外观下未连接采集卡的状态；目前尚未完成真实 HDMI 采集验收。
 
@@ -45,7 +45,7 @@
 
 [下载签名 Android APK](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.3/pocket-monitor-0.1.3-release.apk) · [发行说明、源码与校验值](https://github.com/ttermish/pocket-monitor/releases/tag/v0.1.3)
 
-仓库为私有时需要访问权限。开发者也可按[构建指南](docs/DEVELOPMENT.md)生成安装包。
+APK 已公开下载，无需登录。开发者也可按[构建指南](docs/DEVELOPMENT.md)生成安装包。
 
 新标签页面如果只显示 **Source code**，说明该版本的 APK 尚未发布；等待 **Android Release** 工作流完成，再从 **Assets** 下载 `.apk`，或直接点击上面的 APK 链接。Source code 是源码，不是安装包。
 

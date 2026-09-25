@@ -7,9 +7,9 @@
 | Settings / 设置 | [Open image](settings-en.png) | [查看图片](settings-zh.png) |
 | App icon / 应用图标 | [PNG](app-icon.png) | [SVG 源图](app-icon.svg) |
 
-The screenshots show the actual app UI rendered by Robolectric, without a connected capture card. They are not evidence of working HDMI capture. Private-repository images require repository access; offline readers need the complete source archive, not a standalone README attachment.
+The screenshots show the actual app UI rendered by Robolectric, without a connected capture card. They are not evidence of working HDMI capture. The images are publicly accessible without signing in; offline readers need the complete source archive, not a standalone README attachment.
 
-截图由 Robolectric 渲染实际应用 UI，展示未连接采集卡的状态，不作为 HDMI 采集成功的证据。私有仓库图片需要访问权限；离线阅读请下载并解压完整源码包，单独下载 README 附件不含图片。
+截图由 Robolectric 渲染实际应用 UI，展示未连接采集卡的状态，不作为 HDMI 采集成功的证据。图片已公开，无需登录；离线阅读请下载并解压完整源码包，单独下载 README 附件不含图片。
 
 ## 更新双语截图
 

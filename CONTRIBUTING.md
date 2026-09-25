@@ -16,7 +16,7 @@ Remove personal information, USB serial numbers and private screen content from 
 
 ## Development workflow
 
-1. Fork the repository and create a focused branch from `main`, such as `fix/usb-reconnect`. A private repository requires access first.
+1. Fork the repository and create a focused branch from `main`, such as `fix/usb-reconnect`.
 2. Follow the [build guide](docs/DEVELOPMENT.en.md) to configure JDK 17 and the Android SDK. Use the bundled Gradle Wrapper.
 3. Keep each PR focused on one problem. Separate shared models from Android capture code, preserving session invalidation, threading and resource cleanup.
 4. Add regression coverage for behavior changes and run the relevant checks.
