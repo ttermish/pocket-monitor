@@ -38,9 +38,9 @@
 
 ## 安装
 
-当前仓库尚未发布可下载的 APK 附件。开发者可按[构建指南](docs/DEVELOPMENT.md)生成安装包。
+当前尚未创建 GitHub Release。签名 APK/AAB 由成功的 [Android Release 工作流](https://github.com/ttermish/pocket-monitor/actions/workflows/release.yml)上传：打开一次已完成的运行，下载 `signed-release-<run id>`，解压后安装 `-release.apk`。仓库为私有时需要访问权限。开发者也可按[构建指南](docs/DEVELOPMENT.md)生成安装包。
 
-拿到开发测试 APK 后，在手机打开它，并按系统提示允许该来源安装应用。测试包使用 Debug 签名；覆盖安装需签名一致，卸载旧版本会清除已保存的格式设置。
+在手机打开 APK，按系统提示允许该来源安装应用。Release 包使用专用签名，与本地 Debug 包不同，不能直接覆盖已有 Debug 安装；卸载旧版本会清除已保存的格式设置。AAB 用于商店分发，不能直接安装。
 
 ## 三步开始使用
 

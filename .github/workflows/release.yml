@@ -1,0 +1,156 @@
+name: Android Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    environment: release
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate source and tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor HEAD origin/main
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            python3 - <<'PY'
+          import os, pathlib, re
+          text = pathlib.Path('androidApp/build.gradle.kts').read_text()
+          version = re.search(r'versionName = "([^"]+)"', text).group(1)
+          tag = os.environ['GITHUB_REF_NAME']
+          if tag != 'v' + version:
+              raise SystemExit('Tag does not match Android versionName')
+          if not pathlib.Path('docs/releases', tag + '.md').is_file():
+              raise SystemExit('Missing release notes for this tag')
+          PY
+          fi
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@0b6dd653ba04f4f93bf581ec31e66cbd7dcb644d # v4
+        with:
+          cache-disabled: true
+      - name: Install Android SDK packages
+        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Run tests
+        run: ./gradlew --no-daemon :shared:jvmTest :androidApp:testDebugUnitTest
+      - name: Restore signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          python3 - <<'PY'
+          import base64, os, pathlib
+          value = os.environ.get('KEYSTORE_BASE64', '')
+          if not value:
+              raise SystemExit('Missing ANDROID_KEYSTORE_BASE64 environment secret')
+          path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'pocket-monitor-release.keystore'
+          data = base64.b64decode(value, validate=True)
+          with path.open('xb') as stream:
+              os.chmod(path, 0o600)
+              stream.write(data)
+          PY
+      - name: Build signed Release APK and AAB
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/pocket-monitor-release.keystore
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./gradlew --no-daemon --no-configuration-cache :androidApp:lintRelease :androidApp:assembleRelease :androidApp:bundleRelease
+      - name: Verify signatures and package release material
+        env:
+          ANDROID_SIGNING_CERT_SHA256: ${{ vars.ANDROID_SIGNING_CERT_SHA256 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_TOOLS="$ANDROID_HOME/build-tools/35.0.0"
+          "$SDK_TOOLS/apksigner" verify --verbose --print-certs androidApp/build/outputs/apk/release/androidApp-release.apk > "$RUNNER_TEMP/apk-signature.txt"
+          "$SDK_TOOLS/zipalign" -c -P 16 4 androidApp/build/outputs/apk/release/androidApp-release.apk
+          jarsigner -verify androidApp/build/outputs/bundle/release/androidApp-release.aab > "$RUNNER_TEMP/aab-signature.txt"
+          grep -q 'jar verified' "$RUNNER_TEMP/aab-signature.txt"
+          python3 - <<'PY'
+          import os, pathlib, re
+          expected = os.environ['ANDROID_SIGNING_CERT_SHA256'].lower()
+          report = (pathlib.Path(os.environ['RUNNER_TEMP']) / 'apk-signature.txt').read_text()
+          actual = re.search(r'Signer #1 certificate SHA-256 digest: ([0-9a-fA-F]+)', report)
+          if not expected or not actual or actual.group(1).lower() != expected:
+              raise SystemExit('APK signing certificate does not match the release environment')
+          PY
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            export EXPECTED_TAG="$GITHUB_REF_NAME"
+          fi
+          python3 scripts/package_release.py
+          cd artifacts/release
+          sha256sum --check SHA256SUMS
+      - name: Upload signed release bundle
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: signed-release-${{ github.run_id }}
+          path: artifacts/release/*
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload verification reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release-checks-${{ github.run_id }}
+          path: |
+            shared/build/reports/tests/
+            androidApp/build/reports/tests/
+            androidApp/build/reports/lint-results-release.*
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Remove temporary signing key
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import os, pathlib
+          (pathlib.Path(os.environ['RUNNER_TEMP']) / 'pocket-monitor-release.keystore').unlink(missing_ok=True)
+          PY
+
+  publish:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: signed-release-${{ github.run_id }}
+          path: artifacts/release
+      - name: Verify uploaded files
+        working-directory: artifacts/release
+        run: sha256sum --check SHA256SUMS
+      - name: Publish GitHub prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release create "$GITHUB_REF_NAME" artifacts/release/* \
+            --verify-tag --draft --prerelease \
+            --title "Pocket Monitor $GITHUB_REF_NAME" \
+            --notes-file "docs/releases/$GITHUB_REF_NAME.md"
+          gh release edit "$GITHUB_REF_NAME" --draft=false

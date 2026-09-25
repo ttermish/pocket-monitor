@@ -3,6 +3,25 @@ plugins {
     kotlin("android")
     id("org.jetbrains.kotlin.plugin.compose")
 }
+
+val releaseStoreFile = providers.environmentVariable("ANDROID_KEYSTORE_PATH")
+val releaseStorePassword = providers.environmentVariable("ANDROID_KEYSTORE_PASSWORD")
+val releaseKeyAlias = providers.environmentVariable("ANDROID_KEY_ALIAS")
+val releaseKeyPassword = providers.environmentVariable("ANDROID_KEY_PASSWORD")
+val validateReleaseSigning = tasks.register("validateReleaseSigning") {
+    doLast {
+        val required = mapOf(
+            "ANDROID_KEYSTORE_PATH" to releaseStoreFile,
+            "ANDROID_KEYSTORE_PASSWORD" to releaseStorePassword,
+            "ANDROID_KEY_ALIAS" to releaseKeyAlias,
+            "ANDROID_KEY_PASSWORD" to releaseKeyPassword,
+        )
+        val missing = required.filterValues { it.orNull.isNullOrBlank() }.keys
+        check(missing.isEmpty()) { "Missing release signing environment variables: ${missing.joinToString()}" }
+        check(file(releaseStoreFile.get()).isFile) { "Release keystore file does not exist" }
+    }
+}
+
 android {
     namespace = "dev.icelum.pocketmonitor"
     compileSdk = 35
@@ -14,6 +33,19 @@ android {
         versionName = "0.1.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        create("release") {
+            storeFile = releaseStoreFile.orNull?.let { file(it) }
+            storePassword = releaseStorePassword.orNull
+            keyAlias = releaseKeyAlias.orNull
+            keyPassword = releaseKeyPassword.orNull
+        }
+    }
+    buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
     buildFeatures { compose = true }
     testOptions.unitTests.isIncludeAndroidResources = true
     compileOptions {
@@ -22,6 +54,9 @@ android {
     }
     kotlinOptions { jvmTarget = "17" }
     packaging.resources.excludes += setOf("META-INF/AL2.0", "META-INF/LGPL2.1")
+}
+tasks.matching { it.name == "preReleaseBuild" }.configureEach {
+    dependsOn(validateReleaseSigning)
 }
 dependencies {
     implementation(project(":shared"))

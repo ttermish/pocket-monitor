@@ -33,6 +33,16 @@ adb install -r androidApp/build/outputs/apk/debug/androidApp-debug.apk
 
 版本固定：Kotlin 2.1.21、Compose Multiplatform 1.8.1、AGP 8.9.2、Gradle 8.14.2、UVCAndroid 1.0.13。构建依赖来自 Google Maven、Maven Central 和 Gradle Plugin Portal。
 
+## Release 构建
+
+Debug 构建不需要发布密钥。Release 构建需要从私密存储向进程注入 `ANDROID_KEYSTORE_PATH`、`ANDROID_KEYSTORE_PASSWORD`、`ANDROID_KEY_ALIAS`、`ANDROID_KEY_PASSWORD`，不要将值写进命令记录、Gradle 文件或仓库。
+
+```bash
+./gradlew --no-daemon --no-configuration-cache :androidApp:lintRelease :androidApp:assembleRelease :androidApp:bundleRelease
+```
+
+APK 位于 `androidApp/build/outputs/apk/release/androidApp-release.apk`，AAB 位于 `androidApp/build/outputs/bundle/release/androidApp-release.aab`。未配置签名时 Release 任务会失败，Debug 构建仍可运行。GitHub Environment 配置、自动上传和标签发行见[发行指南](RELEASING.md)。
+
 ## 代码结构与协作
 
 - `shared/src/commonMain`：Compose 界面、连接状态、设备/格式模型、模式选择与视频比例计算。

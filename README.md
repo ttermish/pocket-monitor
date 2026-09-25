@@ -38,9 +38,9 @@ This version previews video only. Audio, recording, screenshots, keyboard/mouse 
 
 ## Install
 
-No downloadable APK has been published in this repository yet. Developers can generate one using the [build guide](docs/DEVELOPMENT.md).
+No GitHub Release has been published yet. Signed APK/AAB bundles are uploaded by successful [Android Release workflow runs](https://github.com/ttermish/pocket-monitor/actions/workflows/release.yml): open a completed run, download `signed-release-<run id>`, unzip it and install the `-release.apk`. Repository access is required while this project is private. Developers can also use the [build guide](docs/DEVELOPMENT.md).
 
-Once you have a development APK, open it on your phone and allow installation from that source when prompted. Test builds use a Debug signature. Updating an existing installation requires a matching signature; uninstalling the previous version clears saved capture formats.
+Open the APK on your phone and allow installation from that source when prompted. Release packages use a dedicated signing key; local Debug packages use a different signature. A Release APK cannot update an existing Debug installation directly. Uninstalling the previous version clears saved capture formats. An AAB is intended for store distribution and cannot be installed directly.
 
 ## Quick start
 

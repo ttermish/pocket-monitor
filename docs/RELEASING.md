@@ -2,6 +2,36 @@
 
 本文供维护者准备源码和 APK 发行使用，步骤不是已完成记录。版本发布说明位于 `docs/releases/`，真实验证结果位于 [VALIDATION.md](VALIDATION.md)。
 
+## GitHub Actions
+
+| 工作流 | 触发方式 | 结果 |
+| --- | --- | --- |
+| `Android CI` | 推送 `main`、向 `main` 提 PR、手动运行 | 共享测试、Android 单元测试、Debug Lint；分支构建上传 Debug APK，报告保留 14 天 |
+| `Android Release` | 在 `main` 手动运行 | 测试、Release Lint、签名 APK/AAB 和完整附件；Actions artifact 保留 30 天，不创建版本标签或 Release |
+| `Android Release` | 推送 `v*` 标签 | 标签必须匹配 Android versionName，提交必须属于 `main` 历史；构建通过后创建 GitHub 预发行版并上传附件 |
+
+手动打包：打开仓库 **Actions → Android Release → Run workflow → main**。完成后下载 `signed-release-<run id>`，解压取出 `pocket-monitor-<版本>-release.apk` 安装；AAB 用于后续商店上传，不能直接安装。
+
+标签发行前，先更新版本号和 `docs/releases/v<版本>.md`，提交并推送 `main`，再创建新标签。不要移动已经发布或用于其他构建的旧标签。仓库仍为私有时，Actions 产物及 Release 也需要仓库访问权限。
+
+## 签名 Environment
+
+`release` GitHub Environment 仅允许 `main` 分支和 `v*` 标签。CI / PR 检查不读取签名信息。Environment 中配置：
+
+| 名称 | 类型 | 内容 |
+| --- | --- | --- |
+| `ANDROID_KEYSTORE_BASE64` | Secret | Release keystore 的单行 Base64 内容 |
+| `ANDROID_KEYSTORE_PASSWORD` | Secret | keystore 密码 |
+| `ANDROID_KEY_ALIAS` | Secret | 签名密钥别名 |
+| `ANDROID_KEY_PASSWORD` | Secret | 密钥密码 |
+| `ANDROID_SIGNING_CERT_SHA256` | Variable | 签名证书 SHA-256，小写十六进制、无冒号 |
+
+工作流将 keystore 临时还原到 runner 的临时目录，以 `ANDROID_KEYSTORE_PATH` 传给 Gradle；构建结束后清理。密码仅在签名构建步骤作为环境变量注入，Release 任务不保存 Gradle 缓存。缺少任何签名配置即失败，不回退为 Debug 签名或未签名产物。
+
+发布前验证 APK 签名与 Environment 中的证书指纹一致、AAB 签名可验证、APK 满足 16 KB ZIP 对齐，并核对附件 SHA-256。ZIP 对齐不等同于完成 native ELF 对齐或真实设备兼容性验收。
+
+签名材料需另行保留私密备份，GitHub Secrets 不提供明文取回功能。后续升级应沿用同一密钥；不要把 keystore、密码或备份放进仓库和发布附件。Release 签名与此前 Debug 签名不同，不能覆盖安装旧 Debug 包；卸载旧包会清除本地设置。
+
 ## 准备版本
 
 1. 核对待发布提交及工作区；确认根目录项目许可证、第三方声明与依赖材料完整。
@@ -13,11 +43,13 @@
 
 每个版本的附件应与同一提交和实际构建对应：
 
-- 带版本号的 APK，以及 `SHA256SUMS`。
+- 带版本号的签名 APK、AAB，以及 `SHA256SUMS` 和 `BUILD_INFO.json`（记录版本、提交与证书指纹）。
 - 本项目对应源码，包含 Gradle Wrapper、构建配置、项目许可证、第三方声明和构建步骤；排除本地配置、密钥、缓存和构建输出。
 - 实际使用的 UVCAndroid AAR、对应源码归档和许可材料。当前固定依赖与上游提交见 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)。
 
 GitHub 自动生成的项目源码归档不包含 Maven 依赖源码。`artifacts/` 被 Git 忽略，本地存在文件不意味着接收 APK 的用户也能获得它们；必须检查实际上传的附件。
+
+`scripts/package_release.py` 从实际 APK metadata 读取版本，生成对应提交的源码 ZIP，并下载、校验固定版本的 UVCAndroid AAR 和源码归档。所有输出写入 `artifacts/release/`，要求目录为空以避免混入旧版本。GitHub 工作流会自动执行该脚本并上传整套附件。
 
 UVCAndroid 包含 LGPL-2.1 的 libusb。分发时应保留相关声明，并准备对应库源码和修改、重建及重新链接所需材料，核对最终二进制的实际链接方式。不能仅凭上游下载链接或“库未修改”推定分发资料已齐全。参见 [LGPL-2.1 第 4、6 节](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html)。
 

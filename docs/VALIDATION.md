@@ -13,6 +13,15 @@
 
 测试报告在 `shared/build/reports/tests/jvmTest/`、`androidApp/build/reports/tests/testDebugUnitTest/` 和 `androidApp/build/reports/lint-results-debug.html`。
 
+## Release 工作流本地验证（2026-09-25）
+
+- Debug 构建、共享测试和 Android 单元测试任务通过（既有测试输出为 up-to-date），Debug Lint 通过。
+- 专用签名的 Release APK / AAB 构建与 Release Lint 通过。
+- APK 签名证书与新生成的 Release 证书 SHA-256 一致；`apksigner verify`、`jarsigner -verify` 和 `zipalign -c -P 16 4` 通过。此处 ZIP 对齐不代表新增 native ELF 对齐或真机验收结论。
+- 缺少签名环境变量时 `validateReleaseSigning` 正确失败；打包脚本拒绝与 APK 版本不一致的标签。
+- 发行资料打包及 SHA-256 复核通过，项目源码 ZIP 未包含 keystore、凭据、本机 SDK 配置或构建产物。
+- CI 与 Release YAML 通过 actionlint 检查，所引用 Actions 固定到提交 SHA。远程运行结果以 GitHub Actions 记录为准。
+
 ## 未完成的硬件验证
 
 当前开发环境没有 ADB 真机和 USB 采集卡。没有验证 Mac HDMI 实际输入、特定绿联型号、真实帧率/延迟、手机 USB 供电、拔插或 native USB 视频稳定性。Robolectric 测试不会执行真实 libuvc 传输。
