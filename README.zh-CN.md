@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/images/app-icon.svg" width="96" alt="随身屏圆角启动图标"></p>
+
 <h1 align="center">随身屏 · Pocket Monitor</h1>
 
 <p align="center"><strong>用 Android 手机，查看电脑的 HDMI 画面。</strong></p>

@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/images/app-icon.svg" width="96" alt="Pocket Monitor rounded launcher icon"></p>
+
 <h1 align="center">Pocket Monitor · 随身屏</h1>
 
 <p align="center"><strong>View your computer’s HDMI output on your Android phone.</strong></p>
