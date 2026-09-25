@@ -7,7 +7,7 @@
 | 工作流 | 触发方式 | 结果 |
 | --- | --- | --- |
 | `Android CI` | 推送 `main`、向 `main` 提 PR | 共享测试、Android 单元测试、Debug Lint；分支构建上传 Debug APK，报告保留 14 天，不发布 Release |
-| `Android Release` | 推送 `v*` 标签 | 标签必须匹配 Android versionName，提交必须属于 `main` 历史；构建通过后创建 GitHub 预发行版并上传附件 |
+| `Android Release` | 推送 `v*` 标签 | 标签必须匹配 Android versionName，提交必须属于 `main` 历史；构建通过后创建 GitHub Release并上传附件 |
 
 签名发布只接受标签触发，不提供从 `main` 手动运行的入口。完成后从 GitHub Release 下载 `pocket-monitor-<版本>-release.apk` 安装；AAB 用于后续商店上传，不能直接安装。整套附件也上传为 Actions artifact，保留 30 天。
 

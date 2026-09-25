@@ -18,4 +18,4 @@ The shared module holds Compose UI and platform-independent capture models. Andr
 
 Android tests use Robolectric with native graphics to exercise real Compose interactions and render screenshots. They do not perform actual USB video transfer. See [translation and screenshot instructions](TRANSLATING.md), [hardware compatibility](COMPATIBILITY.md) and the [validation checklist](VALIDATION.md).
 
-`main` and pull requests run CI only. A pushed `v*` tag runs tests, builds a signed APK/AAB and publishes a GitHub prerelease with matching source, third-party material and checksums. Signing secrets belong to the tag-restricted GitHub `release` Environment; see [release operations](RELEASING.md). Local Release tasks intentionally fail if signing variables are missing.
+`main` and pull requests run CI only. A pushed `v*` tag runs tests, builds a signed APK/AAB and publishes a GitHub release with matching source, third-party material and checksums. Signing secrets belong to the tag-restricted GitHub `release` Environment; see [release operations](RELEASING.md). Local Release tasks intentionally fail if signing variables are missing.

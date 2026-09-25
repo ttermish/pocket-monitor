@@ -143,7 +143,7 @@ jobs:
       - name: Verify uploaded files
         working-directory: artifacts/release
         run: sha256sum --check SHA256SUMS
-      - name: Publish GitHub prerelease
+      - name: Publish GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -151,7 +151,7 @@ jobs:
         run: |
           set -euo pipefail
           gh release create "$GITHUB_REF_NAME" artifacts/release/* \
-            --verify-tag --draft --prerelease \
+            --verify-tag --draft \
             --title "Pocket Monitor $GITHUB_REF_NAME" \
             --notes-file "docs/releases/$GITHUB_REF_NAME.md"
-          gh release edit "$GITHUB_REF_NAME" --draft=false
+          gh release edit "$GITHUB_REF_NAME" --draft=false --prerelease=false --latest
