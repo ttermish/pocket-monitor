@@ -9,6 +9,7 @@ import re
 import shutil
 import subprocess
 import urllib.request
+from package_docs import package_documentation
 
 ROOT = Path(__file__).resolve().parents[1]
 DEPENDENCIES = {
@@ -53,14 +54,14 @@ def main():
     if any(output.iterdir()):
         raise SystemExit("Output directory must be empty to avoid mixing releases")
     prefix = f"pocket-monitor-{version}"
+    revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     shutil.copyfile(apk_dir / apk_name, output / f"{prefix}-release.apk")
     shutil.copyfile(ROOT / "androidApp/build/outputs/bundle/release/androidApp-release.aab",
                     output / f"{prefix}-release.aab")
     subprocess.run(["git", "archive", "--format=zip", f"--prefix={prefix}/",
                     f"--output={output / (prefix + '-source.zip')}", "HEAD"], cwd=ROOT, check=True)
-    for name in ("README.md", "README.zh-CN.md", "THIRD_PARTY_NOTICES.md", "LICENSE", "NOTICE"):
-        if (ROOT / name).is_file():
-            shutil.copyfile(ROOT / name, output / name)
+    package_documentation(output / (prefix + "-source.zip"), output, prefix,
+                          os.environ.get("GITHUB_REPOSITORY", "ttermish/pocket-monitor"), revision)
     shutil.make_archive(str(output / "third-party-licenses"), "zip",
                         ROOT / "androidApp/src/main/assets", "licenses")
     for name, (url, expected_hash) in DEPENDENCIES.items():
@@ -72,7 +73,6 @@ def main():
                 shutil.copyfileobj(response, stream)
         if digest(target) != expected_hash:
             raise SystemExit(f"Dependency checksum mismatch: {name}")
-    revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     (output / "BUILD_INFO.json").write_text(json.dumps({
         "versionName": version, "versionCode": element["versionCode"], "commit": revision,
         "signingCertificateSha256": os.environ.get("ANDROID_SIGNING_CERT_SHA256", ""),

@@ -45,12 +45,24 @@
 每个版本的附件应与同一提交和实际构建对应：
 
 - 带版本号的签名 APK、AAB，以及 `SHA256SUMS` 和 `BUILD_INFO.json`（记录版本、提交与证书指纹）。
+- `pocket-monitor-<版本>-docs.zip`：双语 README、完整 `docs/` 图片与指南、根目录 Markdown 文档及已有许可文本，保留目录结构供离线阅读。
 - 本项目对应源码，包含 Gradle Wrapper、构建配置、项目许可证、第三方声明和构建步骤；排除本地配置、密钥、缓存和构建输出。
 - 实际使用的 UVCAndroid AAR、对应源码归档和许可材料。当前固定依赖与上游提交见 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)。
 
 GitHub 自动生成的项目源码归档不包含 Maven 依赖源码。`artifacts/` 被 Git 忽略，本地存在文件不意味着接收 APK 的用户也能获得它们；必须检查实际上传的附件。
 
 `scripts/package_release.py` 从实际 APK metadata 读取版本，生成对应提交的源码 ZIP，并下载、校验固定版本的 UVCAndroid AAR 和源码归档。所有输出写入 `artifacts/release/`，要求目录为空以避免混入旧版本。GitHub 工作流会自动执行该脚本并上传整套附件。
+
+文档从同一份 Git 源码归档生成，不混入工作区未提交的修改。文档 ZIP 保留相对链接；单独上传的 README 和第三方声明将相对图片/文档链接改为对应提交的在线地址。归档缺少 README、截图或链接指向的文档时打包失败，避免发布离线断图资料。新版脚本只影响后续发布，不覆盖已发布版本的附件或校验清单。
+
+无需构建 Android 即可预览已提交版本的文档包：
+
+```bash
+python3 -m unittest discover -s scripts -p 'test_*.py'
+python3 scripts/package_docs.py --output artifacts/documentation
+```
+
+输出目录须为空。main/PR CI 也会生成此文档包，作为 `documentation-<run-id>` artifact 保存 14 天；仍不创建 GitHub Release。发布前按[下载说明](DOWNLOADS.md)核对附件用法。
 
 UVCAndroid 包含 LGPL-2.1 的 libusb。分发时应保留相关声明，并准备对应库源码和修改、重建及重新链接所需材料，核对最终二进制的实际链接方式。不能仅凭上游下载链接或“库未修改”推定分发资料已齐全。参见 [LGPL-2.1 第 4、6 节](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html)。
 

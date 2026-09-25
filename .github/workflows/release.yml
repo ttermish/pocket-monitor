@@ -51,6 +51,7 @@ jobs:
       - name: Run tests
         run: |
           python3 scripts/check_project.py
+          python3 -m unittest discover -s scripts -p 'test_*.py'
           ./gradlew --no-daemon :shared:jvmTest :androidApp:testDebugUnitTest
       - name: Restore signing key
         env:

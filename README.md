@@ -3,7 +3,9 @@
 <h1 align="center">Pocket Monitor · 随身屏</h1>
 
 <p align="center"><strong>View your computer’s HDMI output on your Android phone.</strong></p>
-<p align="center"><strong>English</strong> · <a href="README.zh-CN.md">简体中文</a> · <a href="#quick-start">Quick start</a> · <a href="https://github.com/ttermish/pocket-monitor/issues">Report an issue</a></p>
+**English** · [简体中文](README.zh-CN.md)
+
+**[Download Android APK](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.3/pocket-monitor-0.1.3-release.apk)** · [Screenshots](#preview) · [Quick start](#quick-start) · [Documentation](docs/README.md) · [Report an issue](https://github.com/ttermish/pocket-monitor/issues/new/choose)
 
 Pocket Monitor is a portable video monitor app. Connect your computer’s HDMI output to a USB video capture card, then connect the card to your phone to preview the picture. No sender software is needed on the computer.
 
@@ -15,7 +17,7 @@ Use your phone as a temporary small display to check another computer’s video 
 | :---: | :---: | :---: |
 | [![Preview tab with connection and picture controls](docs/images/preview-en.png)](docs/images/preview-en.png) | [![Devices tab with capture-card and format selection](docs/images/devices-en.png)](docs/images/devices-en.png) | [![Dark settings tab with theme, color and language preferences](docs/images/settings-en.png)](docs/images/settings-en.png) |
 
-[View screenshots individually](docs/images/README.md). The repository and images are public; no sign-in is required. For offline viewing, extract the full source archive so `docs/images/` stays alongside the README.
+[View screenshots individually](docs/images/README.md). The repository and images are public; no sign-in is required. For offline viewing, [download the complete source archive](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.3/pocket-monitor-0.1.3-source.zip) and extract it so `docs/images/` stays alongside the README.
 
 **Preview · Devices · Settings.** These screenshots are rendered from the actual app UI, with no capture card connected. They show light and dark appearances; real HDMI capture still needs hardware validation.
 
@@ -46,6 +48,13 @@ This version previews video only. Audio, recording, screenshots, keyboard/mouse 
 [Download the signed Android APK](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.3/pocket-monitor-0.1.3-release.apk) · [Release notes, source and checksums](https://github.com/ttermish/pocket-monitor/releases/tag/v0.1.3)
 
 The APK is publicly downloadable without signing in. Developers can also use the [build guide](docs/DEVELOPMENT.en.md).
+
+| File | What it is for |
+| --- | --- |
+| `*-release.apk` | Install on your Android phone. |
+| `*-release.aab` | Store distribution; cannot be installed directly. |
+| [`*-source.zip`](https://github.com/ttermish/pocket-monitor/releases/download/v0.1.3/pocket-monitor-0.1.3-source.zip) | Source code and complete documentation, including screenshots. |
+| `SHA256SUMS` | Check downloaded file integrity. See the [download guide](docs/DOWNLOADS.md). |
 
 If a newly pushed tag only shows **Source code**, its release build has not published the APK yet. Wait for **Android Release** to finish, then download the `.apk` under **Assets** or use the APK link above.
 

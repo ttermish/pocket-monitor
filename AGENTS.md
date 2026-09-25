@@ -50,9 +50,11 @@
 ./gradlew :androidApp:testDebugUnitTest :androidApp:lintDebug
 ./gradlew :androidApp:assembleDebug
 python3 scripts/check_project.py
+python3 -m unittest discover -s scripts -p 'test_*.py'
 ```
 
 - 只改文档：检查事实、相对链接和 `git diff --check`，无需重跑应用测试。
+- 修改发行资料脚本：运行 Python 发布/文档打包测试；使用 `package_docs.py` 检查已提交版本的实际文档 ZIP，保持图片、相对链接、源码提交与校验清单一致。
 - 修改共享模型、模式选择或几何计算：运行 `:shared:jvmTest`；为有行为变化的边界补充有意义的回归测试。
 - 修改 Android 生命周期、权限、UI 或持久化：运行 Android 单元测试和 Lint；改动影响共享逻辑时同时运行共享测试。
 - 修改构建、依赖、Manifest、资源或准备交付 APK：构建 Debug，并执行相关测试及 Lint。
